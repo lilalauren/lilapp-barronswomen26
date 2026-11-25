@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "LILA PHOTO crew schedule for Four Seasons PPI EMEA, Danieli Venezia, November 5–8, 2026",
       },
       { name: "author", content: "LILA PHOTO" },
-      { name: "apple-mobile-web-app-title", content: "LILApp" },
+      { name: "apple-mobile-web-app-title", content: "Barron's Women" },
       { name: "theme-color", content: "#e5e9e1" },
       { name: "robots", content: "noindex" },
       { property: "og:title", content: "Barrons Women 2026 - LILApp" },
@@ -97,14 +97,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // Link previews (iMessage, WhatsApp) need the full address of the image.
       {
         property: "og:image",
-        content: "https://lilapp-barronswomen.netlify.app/lilapp-preview.png",
+        content: "https://lilapp-barronswomen.netlify.app/barrons-preview.png",
       },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary_large_image" },
       {
         name: "twitter:image",
-        content: "https://lilapp-barronswomen.netlify.app/lilapp-preview.png",
+        content: "https://lilapp-barronswomen.netlify.app/barrons-preview.png",
       },
     ],
     links: [
@@ -116,9 +116,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "stylesheet", href: appCss },
       // New file names so browsers drop the old swan they remembered.
-      { rel: "icon", href: "/favicon-v2.ico", sizes: "any" },
-      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png?v=2" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon-v2.png" },
+      { rel: "icon", href: "/barrons-favicon.ico", sizes: "any" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png?v=barrons" },
+      { rel: "apple-touch-icon", href: "/barrons-touch-icon.png" },
       { rel: "manifest", href: "/manifest.webmanifest" },
     ],
   }),
