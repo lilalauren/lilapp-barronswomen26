@@ -40,9 +40,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             <p className="text-xs font-semibold tracking-[0.14em] text-subtle uppercase">
               LILApp · Barron's Women 2026
             </p>
-            <h1 className="mt-0.5 truncate font-serif text-[1.65rem] leading-tight tracking-[0.06em] text-foreground uppercase">
-              {TITLES[pathname] ?? "LILApp"}
-            </h1>
+            {/* Schedule needs the room, so it skips the big page title. */}
+            {pathname === "/" ? null : (
+              <h1 className="mt-0.5 truncate font-serif text-[1.65rem] leading-tight tracking-[0.06em] text-foreground uppercase">
+                {TITLES[pathname] ?? "LILApp"}
+              </h1>
+            )}
           </div>
           <UpdatesBell />
         </div>

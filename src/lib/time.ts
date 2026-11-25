@@ -149,12 +149,12 @@ const MONTHS = [
   "December",
 ];
 
-/** Day heading: "TUESDAY, December 1"; "Throughout" stays as written. */
+/** Day heading: "Tuesday, December 1"; "Throughout" stays as written. */
 export function formatDayHeading(day: string): string {
   const date = dayToDate(day);
-  if (!date) return day.toUpperCase();
+  if (!date) return day;
   const d = new Date(`${date}T12:00:00Z`);
-  return `${WEEKDAYS[d.getUTCDay()]!.toUpperCase()}, ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
+  return `${WEEKDAYS[d.getUTCDay()]}, ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
 }
 
 /** "6:42 PM", "Yesterday 4:15 PM" or "Nov 6 4:15 PM" in Palm Beach time. */

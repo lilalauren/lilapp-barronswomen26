@@ -84,19 +84,18 @@ function SchedulePage() {
 function NextUp({ rows, now }: { rows: ScheduleRow[]; now: Date }) {
   const { happening, upNext, minutes } = nowAndNext(rows, now);
   if (!happening && !upNext) return null;
+  // A quiet line under the filters, not a box: what's on now and what's next.
   return (
-    <div className="mt-3 rounded-[13px] bg-sage-card px-4 py-3">
+    <div className="mt-1 space-y-0.5 text-[15px] leading-snug text-muted-foreground">
       {happening ? (
-        <p className="ui-body text-foreground">
-          <span className="label-caps mr-1.5 font-bold text-foreground">Now</span>
-          <span className="font-semibold">{happening.func}</span>
+        <p>
+          Now: <span className="font-semibold text-foreground">{happening.func}</span>
         </p>
       ) : null}
       {upNext && minutes != null ? (
-        <p className="ui-body text-foreground">
-          <span className="label-caps mr-1.5 font-bold text-foreground">Next</span>
-          <span className="font-semibold">{upNext.func}</span>
-          <span className="text-muted-foreground"> · {countdown(minutes)}</span>
+        <p>
+          Next: <span className="font-semibold text-foreground">{upNext.func}</span> ·{" "}
+          {countdown(minutes)}
         </p>
       ) : null}
     </div>
@@ -165,7 +164,7 @@ function FullSchedule({
       ) : (
         grouped.map(([d, dayRows]) => (
           <section key={d} className="mt-6">
-            <h2 className="ui-page-title mb-3 text-left">{formatDayHeading(d)}</h2>
+            <h2 className="ui-day-title mb-3 text-left">{formatDayHeading(d)}</h2>
             <div className="space-y-3">
               {dayRows.map((row) => (
                 <ScheduleCard
