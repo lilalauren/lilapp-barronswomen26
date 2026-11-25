@@ -59,3 +59,38 @@ export function nowAndNext(
 }
 
 export { isEventPast };
+
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** Airtable's Session Title, unless it's only a placeholder ("Title TBA"). */
+export function sessionTitleOf(row: Pick<ScheduleRow, "sessionTitle">): string {
+  const t = row.sessionTitle.trim();
+  return /^(title )?(tba|tbd)$/i.test(t) ? "" : t;
+}
+
+/**
+ * The card's heading, from the Function name without repeating what's printed right under it:
+ * "Breakout 1 - Ponce 3" in Ponce 3 → "Breakout 1"; "Breakout 2 - Ponce 3 (Invesco QQQ)" →
+ * "Breakout 2 (Invesco QQQ)". A General Session with a Session Title keeps just its Type
+ * ("General Session"), since the title says the rest.
+ */
+export function cardTitle(
+  row: Pick<ScheduleRow, "func" | "location" | "type" | "sessionTitle">,
+): string {
+  let f = row.func.trim();
+  const loc = row.location.trim();
+  if (loc && f.toLowerCase() !== loc.toLowerCase()) {
+    const cut = f
+      .replace(new RegExp(escapeRe(loc), "i"), "")
+      .replace(/\s+/g, " ")
+      .replace(/\s-\s*\(/, " (")
+      .replace(/\s*-\s*$/, "")
+      .trim();
+    if (cut && cut !== f) f = cut;
+  }
+  const type = row.type.trim();
+  if (sessionTitleOf(row) && type && f.toLowerCase().startsWith(`${type.toLowerCase()} - `)) {
+    f = f.slice(0, type.length);
+  }
+  return f;
+}

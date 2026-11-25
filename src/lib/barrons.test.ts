@@ -3,7 +3,15 @@ import assert from "node:assert/strict";
 
 import type { ScheduleRow } from "./airtable.server";
 import { tripFromRecords } from "./airtable.server";
-import { filterRows, groupByDay, isAssigned, isNoCoverage, nowAndNext } from "./schedule";
+import {
+  cardTitle,
+  filterRows,
+  groupByDay,
+  isAssigned,
+  isNoCoverage,
+  nowAndNext,
+  sessionTitleOf,
+} from "./schedule";
 import { countdown, dayToDate, isEventPast, parseTimeRange } from "./time";
 
 const row = (over: Partial<ScheduleRow>): ScheduleRow => ({
@@ -146,5 +154,29 @@ describe("Airtable mapping", () => {
     assert.equal(trip.schedule[1]!.runOfShow, "6:15 Arrive\n6:30 Toast");
     assert.equal(JSON.stringify(trip).includes("secret"), false);
     assert.equal(trip.schedule[0]!.rushSocial, true);
+  });
+});
+
+describe("card titles", () => {
+  it("doesn't repeat the room that's printed under the title", () => {
+    const t = (func: string, location: string) => cardTitle(row({ func, location }));
+    assert.equal(t("Breakout 1 - Ponce 3", "Ponce 3"), "Breakout 1");
+    assert.equal(t("Breakout 2 - Ponce 3 (Invesco QQQ)", "Ponce 3"), "Breakout 2 (Invesco QQQ)");
+    assert.equal(
+      t("Breakout 4 - Ponce 6 Forum (repeat)", "Ponce 6"),
+      "Breakout 4 - Forum (repeat)",
+    );
+    assert.equal(t("Breakout 1 - The Circle", "The Circle"), "Breakout 1");
+    assert.equal(t("Registration", "South Loggia"), "Registration");
+  });
+  it("shortens a General Session that has its own title", () => {
+    const gs = row({
+      func: "General Session - Wall Street to Digital Assets",
+      type: "General Session",
+      sessionTitle: "Ahead of the Curve",
+    });
+    assert.equal(cardTitle(gs), "General Session");
+    assert.equal(cardTitle({ ...gs, sessionTitle: "Title TBA" }), gs.func);
+    assert.equal(sessionTitleOf({ sessionTitle: "Title TBA" }), "");
   });
 });

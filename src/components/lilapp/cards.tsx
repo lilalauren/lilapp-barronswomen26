@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import { Check, ChevronRight, ChevronUp, X } from "lucide-react";
 
 import type { ScheduleRow } from "@/lib/airtable.server";
-import { isNoCoverage } from "@/lib/schedule";
+import { cardTitle, isNoCoverage, sessionTitleOf } from "@/lib/schedule";
 import { gotShots, toggleShot } from "@/lib/shots";
 import { cn } from "@/lib/utils";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
@@ -111,7 +111,12 @@ export function ScheduleCard({
 
   if (past && !shown) {
     return (
-      <PastLine cardRef={cardRef} time={row.time} title={row.func} onOpen={() => setShown(true)} />
+      <PastLine
+        cardRef={cardRef}
+        time={row.time}
+        title={sessionTitleOf(row) || cardTitle(row)}
+        onOpen={() => setShown(true)}
+      />
     );
   }
 
@@ -137,8 +142,9 @@ export function ScheduleCard({
           {label ? <PriorityLabel priority={label} /> : null}
         </div>
         <h3 className="mt-1.5 text-[17px] leading-snug font-semibold text-foreground">
-          {row.func}
+          {cardTitle(row)}
         </h3>
+        <SessionTitle row={row} className="line-clamp-2" />
         {row.location ? (
           <p className="mt-0.5 text-[15px] leading-snug text-muted-foreground">{row.location}</p>
         ) : null}
@@ -167,6 +173,15 @@ export function ScheduleCard({
   );
 }
 
+/** The session's own title, so breakouts and General Sessions aren't known only by room. */
+function SessionTitle({ row, className }: { row: ScheduleRow; className?: string }) {
+  const t = sessionTitleOf(row);
+  if (!t) return null;
+  return (
+    <p className={cn("mt-0.5 text-[15px] leading-snug text-foreground italic", className)}>{t}</p>
+  );
+}
+
 /** M Financial's bottom sheet. Rush Social Key Shots come first, then everything else. */
 function ScheduleSheet({
   open,
@@ -182,9 +197,10 @@ function ScheduleSheet({
     <DetailSheet
       open={open}
       onClose={onClose}
-      title={row.func}
+      title={cardTitle(row)}
       header={
         <>
+          <SessionTitle row={row} />
           {row.location ? (
             <p className="mt-1 text-[15px] leading-snug text-muted-foreground">{row.location}</p>
           ) : null}
@@ -214,9 +230,8 @@ function ScheduleSheet({
           <Field label="Type" value={row.type} />
         </section>
       ) : null}
-      {row.sessionTitle || row.sponsor || row.separateGallery || row.quantity ? (
+      {row.sponsor || row.separateGallery || row.quantity ? (
         <section className="space-y-0.5">
-          <Field label="Session Title" value={row.sessionTitle} />
           <Field label="Sponsor" value={row.sponsor} />
           <Field label="Separate Gallery" value={row.separateGallery} />
           <Field label="Quantity" value={row.quantity} />
