@@ -149,10 +149,15 @@ const MONTHS = [
   "December",
 ];
 
-/** Day heading: "Tuesday, December 1"; "Throughout" stays as written. */
+/** What the app calls a Day value: Airtable's "Throughout" shows as "TBD". */
+export function dayLabel(day: string): string {
+  return day === THROUGHOUT ? "TBD" : day;
+}
+
+/** Day heading: "Tuesday, December 1"; "Throughout" shows as "TBD". */
 export function formatDayHeading(day: string): string {
   const date = dayToDate(day);
-  if (!date) return day;
+  if (!date) return dayLabel(day);
   const d = new Date(`${date}T12:00:00Z`);
   return `${WEEKDAYS[d.getUTCDay()]}, ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
 }

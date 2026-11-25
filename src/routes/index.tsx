@@ -6,7 +6,7 @@ import { ScheduleCard } from "@/components/lilapp/cards";
 import { Quiet, SelectBox } from "@/components/lilapp/ui";
 import type { ScheduleRow, TripData } from "@/lib/airtable.server";
 import { DAYS, filterRows, groupByDay, isEventPast, nowAndNext, TEAM } from "@/lib/schedule";
-import { countdown, formatDayHeading, TIME_LABEL } from "@/lib/time";
+import { countdown, dayLabel, formatDayHeading, TIME_LABEL } from "@/lib/time";
 import { tripQueryOptions } from "@/lib/trip";
 import { useDisplayName } from "@/lib/use-display-name";
 
@@ -149,7 +149,7 @@ function FullSchedule({
           <option value="">All days</option>
           {DAYS.map((d) => (
             <option key={d} value={d}>
-              {d}
+              {dayLabel(d)}
             </option>
           ))}
         </SelectBox>
@@ -163,8 +163,8 @@ function FullSchedule({
         <Quiet>Nothing scheduled for {who || "this filter"}.</Quiet>
       ) : (
         grouped.map(([d, dayRows]) => (
-          <section key={d} className="mt-6">
-            <h2 className="ui-day-title mb-3 text-left">{formatDayHeading(d)}</h2>
+          <section key={d} className="mt-4">
+            <h2 className="ui-day-title mb-2 text-left">{formatDayHeading(d)}</h2>
             <div className="space-y-3">
               {dayRows.map((row) => (
                 <ScheduleCard
