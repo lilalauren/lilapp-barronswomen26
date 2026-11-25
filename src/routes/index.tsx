@@ -125,12 +125,18 @@ function FullSchedule({
     return (happening ?? upNext)?.id ?? null;
   }, [rows, now]);
   const targetRef = useRef<HTMLElement | null>(null);
+  // When a function finishes (its card goes light and folds), the list moves up so the
+  // current card sits in the top third of the phone screen, with one finished card above it.
   useEffect(() => {
     if (!target) return;
-    const id = window.setTimeout(
-      () => targetRef.current?.scrollIntoView({ block: "center", behavior: "smooth" }),
-      150,
-    );
+    const id = window.setTimeout(() => {
+      const el = targetRef.current;
+      if (!el) return;
+      const header = document.querySelector("header")?.getBoundingClientRect().bottom ?? 0;
+      const peek = Math.min(64, window.innerHeight * 0.1);
+      const top = el.getBoundingClientRect().top + window.scrollY - header - peek;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    }, 150);
     return () => window.clearTimeout(id);
   }, [target]);
 
